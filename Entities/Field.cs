@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ORM.Entities
 {
-    internal class Field
+    public class Field
     {
         public Field()
         {

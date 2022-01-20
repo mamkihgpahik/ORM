@@ -9,18 +9,28 @@ using System.Threading.Tasks;
 
 namespace ORM.Repository
 {
-    internal class UnitOfWork : IUnitOfWork
+    internal class UnitOfWork
     {
-        public IRepository<Entity> Entity { get; set; }
-        DbContext _dbContext;
+        
+        DbContext db;
         public UnitOfWork(DbContext dbContext)
         {
-            _dbContext = dbContext;
+            db = dbContext;
         }
+        private ShipRepository _shipRepository;
 
+        public ShipRepository ShipRepository
+        {
+            get
+            {
+                if (_shipRepository == null)
+                    _shipRepository = new ShipRepository(db);
+                return _shipRepository;
+            }
+        }
         public void Save()
         {
-            throw new NotImplementedException();
+            db.SaveChanges();
         }
     }
 }

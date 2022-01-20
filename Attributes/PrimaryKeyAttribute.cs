@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ORM.Entities
+namespace ORM.Attributes
 {
-    internal class Entity
+    public class PrimaryKeyAttribute : Attribute
     {
     }
 }

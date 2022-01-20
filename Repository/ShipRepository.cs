@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace ORM.Repository
 {
-    internal class Repository : IRepository<Ship>
+    internal class ShipRepository : IRepository<Ship>
     {
         DbContext db;
-        public Repository(DbContext dbContext)
+        public ShipRepository(DbContext dbContext)
         {
             db = dbContext;
         }

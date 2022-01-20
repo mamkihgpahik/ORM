@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace ORM.Entities
 {
-    internal class ShipType
+    public class ShipType
     {
-        [Key]
-        [Required]
+      
         public int ID { get; set; }
-        [Required]
         public string Name { get; set; }
     }
 }

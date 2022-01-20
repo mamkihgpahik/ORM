@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace ORM.Entities
 {
-    internal class Direction
+    public class Direction
     {
-        [Key]
-        [Required]
+        
         public int ID { get; set; }
-        [Required]
+        
         public string Name { get; set; }
 
     }

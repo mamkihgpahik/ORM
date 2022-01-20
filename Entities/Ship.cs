@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ORM.Entities
 {
-    internal class Ship
+    public class Ship
     {
         public Guid ID { get; set; }
         public int Size { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ORM.Entities
 {
-    internal class Point
+    public class Point
     {
         public Guid ID { get; set; }   
         public int X { get; set; }

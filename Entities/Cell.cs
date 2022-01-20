@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ORM.Entities
 {
-    internal class Cell
+    public class Cell
     {
         public Guid ID { get; set; }
         public Guid ShipId { get; set; }

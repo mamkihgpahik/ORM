@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace ORM.Entities
 {
-    internal class Quadrant
+    public class Quadrant
     {
-        [Key]
-        [Required]
+     
         public int ID { get; set; }
-        [Required]
+        
         public string Name { get; set; }
 
     }
