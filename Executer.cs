@@ -14,7 +14,7 @@ namespace ORM
         List<SqlTransaction> transactions;
         QueryBuilder<T> queryBuilder;
         public Executer(SqlConnection consql)
-        {
+        { 
             this.conn = consql;
             transactions = new List<SqlTransaction>();
             queryBuilder = new QueryBuilder<T>(consql.Database);
