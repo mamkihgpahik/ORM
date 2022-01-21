@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ORM.Repository
 {
-    internal class UnitOfWork
+    internal class UnitOfWork:IUnitOfWork
     {
         
         DbContext db;
@@ -18,7 +18,8 @@ namespace ORM.Repository
             db = dbContext;
         }
         private ShipRepository _shipRepository;
-
+        private DirectionRepository _directionRepository;
+       
         public ShipRepository ShipRepository
         {
             get
@@ -28,9 +29,22 @@ namespace ORM.Repository
                 return _shipRepository;
             }
         }
+        public DirectionRepository DirectionRepository
+        {
+            get
+            {
+                if (_directionRepository == null)
+                    _directionRepository = new DirectionRepository(db);
+                return _directionRepository;
+            }
+        }
         public void Save()
         {
             db.SaveChanges();
         }
+        //public void Dispose()
+        //{
+        //    db.Close();
+        //}
     }
 }

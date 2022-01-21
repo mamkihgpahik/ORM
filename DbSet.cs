@@ -10,16 +10,30 @@ namespace ORM
 {
     public class DbSet<T>where T : class
     {
-        IQueryBuilder queryBuilder;
-        QueryBuilder<T> qb;
+        
+        QueryBuilder<T> qb { get; set; }
         public StringBuilder query { get; set; }
-        public DbSet()
+        public StringBuilder querySelect { get; set; }
+        public DbSet(string database)
         {
-
+            query = new StringBuilder();
+            qb = new QueryBuilder<T>(database);
         }
         public void Add(T entity)
         {
             query.Append(qb.QueryToInsert(entity));
         }
+        //public T Get(Guid id)
+        //{
+        //    return qb.QueryToGetById(id);
+        //}
+        public void Delete(Guid id)
+        {
+            query.Append(qb.QueryToDeleteById(id));
+        }
+        //public IEnumerable<T> Select()
+        //{
+        //    querySelect.Append(qb.QueryToGetAll());
+        //}
     }
 }

@@ -9,7 +9,7 @@ namespace ORM.Interfaces
 {
     internal interface IUnitOfWork
     {
-        IRepository<Entity> Entity { get; }
+        
         void Save();
     }
 }
