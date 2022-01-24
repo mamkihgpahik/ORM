@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ORM.Interfaces
 {
-    internal interface IDbSet<TEntity>
+    public interface IDbSet<TEntity>
     {
         void Add(TEntity entity);
         void Delete (Guid id);

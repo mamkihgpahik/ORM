@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ORM.Interfaces
+namespace ORM.Attributes
 {
-    public interface IQueryBuilder
+    class NotColumnAttribute : Attribute
     {
-       
+
     }
 }

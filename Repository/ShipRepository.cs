@@ -1,32 +1,23 @@
 ﻿using ORM.Context;
 using ORM.Entities;
 using ORM.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace ORM.Repository
 {
-    internal class ShipRepository : IRepository<Ship>
+    public class ShipRepository : IRepository<Ship>
     {
-        DbContext db;
+        private DbContext db;
         public ShipRepository(DbContext dbContext)
         {
-            db = dbContext;
+                this.db = dbContext;
         }
-        public void Add(Ship item)
-        {
-            db.Ships.Add(item);
-        }
-
-        public void Delete(Guid id)
+        public void Add(Ship entity)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Ship> GetAll()
+        public void Delete(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -36,7 +27,17 @@ namespace ORM.Repository
             throw new NotImplementedException();
         }
 
-        public void Update(Ship item)
+        public IEnumerable<Ship> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Ship entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Ship> Where(Expression<Func<Ship, bool>> predicate)
         {
             throw new NotImplementedException();
         }

@@ -8,43 +8,118 @@ using System.Data;
 using ORM.Entities;
 using System.Data.SqlClient;
 using ORM.Repository;
+using ORM.Attributes;
+using System.Reflection;
 
 namespace ORM.Context
 {
     public class DbContext
     {
-        SqlConnection _connection;
-        
-        public DbSet<Ship> Ships { get; set; }
-
         public DbSet<Direction> Directions { get; set; }
-
+        public DbSet<Ship> Ships { get; set; }
+        private SqlConnection _connection;
+        private string _database;
+        private List<SqlTransaction> _transactions;
         //public Dictionary<Type, List<DbSet<Type>>> keyValuePairs { get; set; }
 
         public QueryBuilder<Direction> qb;
-
-        public DbContext(SqlConnection dbConnection, string databse)//как получить название бд имея строку подключения
+        //на контекст надо передавать лист транзакций из дб сета
+        public DbContext(SqlConnection dbConnection)
         {
             _connection = dbConnection;
-            Directions = new DbSet<Direction>(databse);
+            _database = dbConnection.Database;
+            _transactions = new List<SqlTransaction>();
         }
-        public void Add(Type type, object entity)
-        {
-            //if (entity.GetType() is type)
-            //{
-            //  keyValuePairs[type].Add();
-            //}
+        //public void Add(T entity)
+        //{
+        //    try
+        //    {
+        //        StringBuilder SqlQuery = new StringBuilder();
+        //        SqlQuery.Append(_queryBuilder.QueryToInsert(entity));
+        //        /*var queryResult =*/ ExecuteSqlQuery(SqlQuery.ToString());
+        //        //return new OperationCreateResult() { status = queryResult.status, exception = queryResult.exception, InsertedId = queryResult.InsertedId };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //return new OperationCreateResult() { status = Status.Failed, exception = ex };
+        //    }
+        //}
+        //public void Delete(Guid id)
+        //{
+        //    try
+        //    {
+        //        StringBuilder SqlQuery = new StringBuilder();
+        //        SqlQuery.Append(_queryBuilder.QueryToDeleteById(id));
+        //        /*var queryResult = */
+        //        ExecuteSqlQuery(SqlQuery.ToString());
+        //        //return new OperationResult() { status = queryResult.status, exception = queryResult.exception };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //return new OperationResult() { status = Status.Failed, exception = ex };
+        //    }
+        //}
+        //public void Update(T entity)
+        //{
+        //    try
+        //    {
+
+        //        StringBuilder SqlQuery = new StringBuilder();
+        //        SqlQuery.Append(_queryBuilder.QueryToUpdate(entity));
+        //        /*var queryResult =*/ ExecuteSqlQuery(SqlQuery.ToString());
+        //        //return new OperationResult() { status = queryResult.status, exception = queryResult.exception };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //return new OperationResult() { status = Status.Failed, exception = ex };
+        //    }
+        //}
 
 
-        }
-        public void SaveChanges()
+
+
+
+        private void ExecuteSqlQuery(string sqlQuery)//тут я заполняю лист транзакций
         {
-            //просто чтобы прога работала 
-            List<SqlTransaction> transactions = new List<SqlTransaction>(); 
-            //либо тут проходится по всем сгенерированным строкам из Executer/QueryBuilder
-            ExecuteTransaction(transactions);
+            using (_connection)
+            {
+                try
+                {
+                    if (sqlQuery.Contains("INSERT"))
+                    {
+                        SqlCommand sqlCommand = new SqlCommand(sqlQuery, _connection);
+
+                        _connection.Open();
+                        var pID = new SqlParameter();
+                        pID.ParameterName = "INSERTED_ID";
+                        pID.Size = 128;
+                        pID.Direction = ParameterDirection.Output;
+
+                        sqlCommand.Parameters.Add(pID);
+
+                        var insertedID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                        //return new QueryResult() { status = Status.Succses, InsertedId = insertedID };
+                    }
+                    else
+                    {
+                        SqlDataAdapter adapter = new SqlDataAdapter(sqlQuery, _connection);
+                        DataSet dataSet = new DataSet();
+                        adapter.Fill(dataSet);
+                        //return new QueryResult() { status = Status.Succses, Result = dataSet };
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    //return new QueryResult() { status = Status.Succses, exception = ex };
+                }
+            }
         }
-        private void ExecuteTransaction(List<SqlTransaction> trans)
+        public void SaveChanges()//проходится по массиву всех дбсетов и выполнять там транзакции 
+        {
+            ExecuteTransaction();
+        }
+        private void ExecuteTransaction()//тут я выполняю все запросы которые были добавлены в транзакцию в методе ExecuteSqlQuery
         {
             using (SqlConnection connection = _connection)
             {
@@ -61,7 +136,7 @@ namespace ORM.Context
                     //        cmd.ExecuteNonQuery();
                     //    }
                     //}
-                    cmd.CommandText = $"{Directions.query}";
+                    
                     tran.Commit();
                     connection.Close();
                 }
@@ -77,7 +152,7 @@ namespace ORM.Context
                 }
             }
 
-            foreach (var item in trans)
+            foreach (var item in _transactions)
             {
                 try
                 {
@@ -91,42 +166,7 @@ namespace ORM.Context
                 
             }
         }
-        public void Select()
-        {
-            using (SqlConnection connection = _connection)
-            {
-
-                // Создаем объект DataAdapter
-                SqlDataAdapter adapter = new SqlDataAdapter(Directions.querySelect.ToString(), connection);
-                // Создаем объект Dataset
-                DataSet ds = new DataSet();
-                // Заполняем Dataset
-                adapter.Fill(ds);
-
-
-                DataTable dt = ds.Tables[0];
-                // добавим новую строку
-                DataRow newRow = dt.NewRow();
-
-                // Изменим значение в столбце Age для первой строки
-
-                // Отображаем данные
-                // перебор всех таблиц
-                foreach (DataColumn column in dt.Columns)
-                    Console.Write($"{column.ColumnName}\t");
-                Console.WriteLine();
-                // перебор всех строк таблицы
-                foreach (DataRow row in dt.Rows)
-                {
-                    // получаем все ячейки строки
-                    var cells = row.ItemArray;
-                    foreach (object cell in cells)
-                        Console.Write($"{cell}\t");
-                    Console.WriteLine();
-                }
-            }
-            Console.Read();
-        }
+       
 
     }
 }

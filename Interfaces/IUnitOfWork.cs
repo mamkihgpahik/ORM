@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ORM.Interfaces
 {
-    internal interface IUnitOfWork
+    public interface IUnitOfWork
     {
         
         void Save();

@@ -12,7 +12,7 @@ namespace ORM.Repository
     internal class UnitOfWork:IUnitOfWork
     {
         
-        DbContext db;
+        private DbContext db;
         public UnitOfWork(DbContext dbContext)
         {
             db = dbContext;
